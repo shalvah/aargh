@@ -1,7 +1,7 @@
 {
   "name": "aargh",
   "version": "0.1.0",
-  "description": "",
+  "description": "Selectively handle errors in JavaScript",
   "main": "index.js",
   "scripts": {
     "test": "tap test/*.js"
