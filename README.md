@@ -3,6 +3,9 @@ Yep. That's the sound of a man who just got dumped by his girlfriend, chewed by 
 
 Lol, just kidding. It's *one* of the sounds I make when working with JavaScript. Aaaaaaargh.
 
+[![npm version](https://badge.fury.io/js/aargh.svg)](https://badge.fury.io/js/aargh)
+[![Build Status](https://travis-ci.org/shalvah/aargh.svg?branch=master)](https://travis-ci.org/shalvah/aargh)
+
 ## Why, what, who is this?
 This module gives you a simple way to selectively handle errors in JavaScript.
 
