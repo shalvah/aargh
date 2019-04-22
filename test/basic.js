@@ -1,5 +1,5 @@
 const tap = require('tap');
-const checkError = require('../index.js');
+const aargh = require('../index.js');
 
 class MyError extends Error {
     constructor(...args) {
@@ -41,7 +41,7 @@ function scenario (a) {
         x = functionThatCanThrowDifferentErrors(a);
         return x;
     } catch(e) {
-        return checkError(e)
+        return aargh(e)
             .type(MyError, (e) => 'Caught ' + e.constructor.name)
             .type([AnotherError, YetAnotherError], (e) => 'Caught ' + e.constructor.name)
             .throw();
@@ -81,7 +81,7 @@ const functionThatCanThrowDifferentErrorsAsPromise = (a) => {
 function promiseScenario (a) {
     return functionThatCanThrowDifferentErrorsAsPromise(a)
             .catch(e => {
-                return checkError(e)
+                return aargh(e)
                     .type(MyError, (e) => 'Caught ' + e.constructor.name)
                     .type([AnotherError, YetAnotherError], (e) => 'Caught ' + e.constructor.name)
                     .throw();
@@ -101,7 +101,7 @@ function ohNoScenario (a) {
     try {
         return functionThatCanThrowDifferentErrors(a);
     } catch(e) {
-        return checkError(e)
+        return aargh(e)
             .type(MyError, (e) => {
                 throw new AnotherError('Oh no!');
             })
