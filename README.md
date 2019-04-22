@@ -48,7 +48,7 @@ try {
 }
 ```
 
-See the problem? Different errors could be thrown in that function. For instance, if you look closely at the function, you'll see I made a typo (`userIdd`) which will throw a ReferenceError when executed. However, the calling code will expect a RateLimitError only.
+See the problem? Different errors could be thrown in that function. For instance, if you look closely at the function, you'll see I made a typo on the first line (`userIdd` instead of `userId`) which will throw a `ReferenceError` when executed. However, the calling code will expect a `RateLimitError` only.
 
 There's a simple fix: use an if-statement:
 ```javascript
@@ -80,7 +80,7 @@ try {
     // handle it
 }
 
-// any error that doesn't match the types you specified is not caught
+// Any error that doesn't match the types you specified is not caught
 ```
 So I decided to do something similar for JS. Here's how you use it:
 
@@ -89,13 +89,14 @@ try {
     let tweets = await fetchTweets(userId);
 } catch(e) {
     return aargh(e)
-        .type(RateLimitExceededError, (e) => 
+        .type(RateLimitExceededError, (e) => {
             console.log('Rate limit exceeded; initiating exponential backoff');
             // do backoff
         })
         .type([SomeOtherError, SomeOtherAnnoyingError], (e) => {
             // handle it
-        }).throw();
+        })
+        .throw();
 }
 ```
 
@@ -105,22 +106,33 @@ Works with Promise#catch() too:
 fetchTweets(userId)
   .catch(e => {
       return aargh(e)
-          .type(RateLimitExceededError, (e) => 
+          .type(RateLimitExceededError, (e) =>  {
               console.log('Rate limit exceeded; initiating exponential backoff');
               // do backoff
           })
           .type([SomeOtherError, SomeOtherAnnoyingError], (e) => {
               // handle it
-          }).throw();
+          })
+          .throw();
   })
   .then(tweets => {
       // do stuff with them
   })
 ```
 
-The first argument to the `type` function is the type (or types) of error you want to handle. The second is a callback containing the code you want to execute for that error. You can return stuff from this callback too. Aargh will return this value to the caller.
+## Usage
+```javascript
+const aargh = require('aargh');
+```
+### aargh(e)
 
-Calling the `throw()` function ends the chain and ensures any non-matching errors are thrown.
+The entry point. You pass in the error object you want to handle. You should probably have this as the first statement in all your catch() blocks.
+
+### .type(errorTypes, callback)
+The first argument to the `type` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. You can return stuff from this callback too. Aargh will return this value to the caller.
+
+### .throw()
+Calling the `throw()` function ends the chain and ensures any errors which weren't matched by your `type` checks are thrown back to the caller.
 
 ## Want to try it out?
 
