@@ -38,8 +38,7 @@ function functionThatCanThrowDifferentErrors (a) {
 
 function scenario (a) {
     try {
-        x = functionThatCanThrowDifferentErrors(a);
-        return x;
+        return functionThatCanThrowDifferentErrors(a);
     } catch(e) {
         return aargh(e)
             .type(MyError, (e) => 'Caught ' + e.constructor.name)
