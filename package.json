@@ -1,13 +1,20 @@
 {
-  "name": "wte",
-  "version": "1.0.0",
+  "name": "aargh",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "tap test/*.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Shalvah <hello@shalvah.me>",
+  "keywords": [
+    "errors",
+    "error handling",
+    "exceptions",
+    "exception handling",
+    "catch"
+  ],
+  "license": "MIT",
   "devDependencies": {
     "tap": "^12.6.1"
   }
