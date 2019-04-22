@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "tap test/*.js",
+    "pretest": "npm run build",
     "build": "tsc",
     "prepublish": "npm run build"
   },
