@@ -14,7 +14,7 @@ Supposing you have a function like this:
 ```javascript
 function fetchTweets (userId) {
     return twitterApi.fetch(userIdd).then(response => {
-        if (response.error && resppnse.error.message.includes("Too many requests")) {
+        if (response.error && response.error.message.includes("Too many requests")) {
             throw new RateLimitExceededError();
         }
         return response.data;
