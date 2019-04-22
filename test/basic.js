@@ -1,5 +1,5 @@
 const tap = require('tap');
-const aargh = require('../index.js');
+const aargh = require('../dist/index.js');
 
 class MyError extends Error {
     constructor(...args) {
