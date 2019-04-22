@@ -2,9 +2,11 @@
   "name": "aargh",
   "version": "0.1.0",
   "description": "Selectively handle errors in JavaScript",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test/*.js",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "author": "Shalvah <hello@shalvah.me>",
   "keywords": [
@@ -20,6 +22,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "tap": "^12.6.1"
+    "@types/node": "^11.13.6",
+    "tap": "^12.6.2",
+    "typescript": "^3.4.4"
   }
 }
