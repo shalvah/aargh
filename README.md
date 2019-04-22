@@ -141,7 +141,7 @@ Use the `others()` function to end the chain and specify a callback to be execut
 
 ```javascript
 try {
-    return fetchTweets(userId);
+    return await fetchTweets(userId);
 } catch(e) {
     return aargh(e)
         .type(RateLimitExceededError, (e) => {
