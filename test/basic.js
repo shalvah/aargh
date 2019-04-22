@@ -1,36 +1,36 @@
 const tap = require('tap');
 const aargh = require('../dist/index.js');
 
-class MyError extends Error {
+class NumberTwoError extends Error {
     constructor(...args) {
         super(...args);
     }
 }
 
-class AnotherError extends Error {
+class NumberThreeError extends Error {
     constructor(...args) {
         super(...args);
     }
 }
 
-class YetAnotherError extends Error {
+class NumberFourError extends Error {
     constructor(...args) {
         super(...args);
     }
 }
 
-function functionThatCanThrowDifferentErrors (a) {
+function functionThatThrowsErrors (a) {
     switch (a) {
         case 0:
             return true;
         case 1:
             throw new Error('1 passed');
         case 2:
-            throw new MyError('2 passed');
+            throw new NumberTwoError('2 passed');
         case 3:
-            throw new AnotherError('3 passed');
+            throw new NumberThreeError('3 passed');
         case 4:
-            throw new YetAnotherError('4 passed');
+            throw new NumberFourError('4 passed');
         default:
             throw new TypeError('Aaargh');
     }
@@ -38,25 +38,25 @@ function functionThatCanThrowDifferentErrors (a) {
 
 function scenario (a) {
     try {
-        return functionThatCanThrowDifferentErrors(a);
+        return functionThatThrowsErrors(a);
     } catch(e) {
         return aargh(e)
-            .type(MyError, (e) => 'Caught ' + e.constructor.name)
-            .type([AnotherError, YetAnotherError], (e) => 'Caught ' + e.constructor.name)
+            .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
+            .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
             .throw();
     }
 }
 
 // Catches/passes on errors selectively and returns specified return value
 tap.equal(scenario(0), true);
-tap.equal(scenario(2), 'Caught MyError');
-tap.equal(scenario(3), 'Caught AnotherError');
-tap.equal(scenario(4), 'Caught YetAnotherError');
+tap.equal(scenario(2), 'Caught NumberTwoError');
+tap.equal(scenario(3), 'Caught NumberThreeError');
+tap.equal(scenario(4), 'Caught NumberFourError');
 tap.throws(() => scenario(5), TypeError);
 
 // Works with Promises
 
-const functionThatCanThrowDifferentErrorsAsPromise = (a) => {
+const asyncFunctionThatThrowsErrors = (a) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             switch (a) {
@@ -65,11 +65,11 @@ const functionThatCanThrowDifferentErrorsAsPromise = (a) => {
                 case 1:
                     return reject(new Error('1 passed'));
                 case 2:
-                    return reject(new MyError('2 passed'));
+                    return reject(new NumberTwoError('2 passed'));
                 case 3:
-                    return reject(new AnotherError('3 passed'));
+                    return reject(new NumberThreeError('3 passed'));
                 case 4:
-                    return reject(new YetAnotherError('4 passed'));
+                    return reject(new NumberFourError('4 passed'));
                 default:
                     return reject(new TypeError('Aaargh'));
             }
@@ -78,19 +78,19 @@ const functionThatCanThrowDifferentErrorsAsPromise = (a) => {
 };
 
 function promiseScenario (a) {
-    return functionThatCanThrowDifferentErrorsAsPromise(a)
+    return asyncFunctionThatThrowsErrors(a)
             .catch(e => {
                 return aargh(e)
-                    .type(MyError, (e) => 'Caught ' + e.constructor.name)
-                    .type([AnotherError, YetAnotherError], (e) => 'Caught ' + e.constructor.name)
+                    .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
+                    .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
                     .throw();
             });
 }
 
 promiseScenario(0).then(r => tap.equal(r, true));
-promiseScenario(2).then(r => tap.equal(r, 'Caught MyError'));
-promiseScenario(3).then(r => tap.equal(r, 'Caught AnotherError'));
-promiseScenario(4).then(r => tap.equal(r, 'Caught YetAnotherError'));
+promiseScenario(2).then(r => tap.equal(r, 'Caught NumberTwoError'));
+promiseScenario(3).then(r => tap.equal(r, 'Caught NumberThreeError'));
+promiseScenario(4).then(r => tap.equal(r, 'Caught NumberFourError'));
 tap.rejects(() => promiseScenario(5), TypeError);
 
 
@@ -98,13 +98,29 @@ tap.rejects(() => promiseScenario(5), TypeError);
 
 function ohNoScenario (a) {
     try {
-        return functionThatCanThrowDifferentErrors(a);
+        return functionThatThrowsErrors(a);
     } catch(e) {
         return aargh(e)
-            .type(MyError, (e) => {
-                throw new AnotherError('Oh no!');
+            .type(NumberTwoError, (e) => {
+                throw new NumberThreeError('Oh no!');
             })
             .throw();
     }
 }
-tap.throws(() => ohNoScenario(2), AnotherError);
+tap.throws(() => ohNoScenario(2), NumberThreeError);
+
+// Catch-all handler
+
+function catchAllScenario (a) {
+    try {
+        return functionThatThrowsErrors(a);
+    } catch(e) {
+        return aargh(e)
+            .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
+            .others((e) => 'Caught ' + e.constructor.name + ' with others');
+    }
+}
+
+tap.equal(catchAllScenario(1), 'Caught Error with others');
+tap.equal(catchAllScenario(2), 'Caught NumberTwoError');
+tap.equal(catchAllScenario(3), 'Caught NumberThreeError with others');

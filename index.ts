@@ -16,7 +16,7 @@ const makeErrorChecker = (e: Function) => {
             for (let type of errorTypes) {
                 if (this.e.constructor.name === type.name) {
                     this.matched = true;
-                    this.result = callback ? callback(this.e) : 1;
+                    this.result = callback ? callback(this.e) : undefined;
                     return this;
                 }
             }
@@ -26,6 +26,12 @@ const makeErrorChecker = (e: Function) => {
         throw() {
             if (this.matched) return this.result;
             throw this.e;
+        },
+
+        others(callback: Function) {
+            if (this.matched) return this.result;
+            this.result = callback ? callback(this.e) : undefined;
+            return this.result;
         }
     }
 };
