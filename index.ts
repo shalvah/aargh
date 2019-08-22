@@ -1,6 +1,7 @@
 'use strict';
 
-const makeErrorChecker = (e: Function) => {
+const makeErrorChecker = (e: object) => {
+    type T = typeof e;
 
     return {
         e: e,
@@ -9,12 +10,12 @@ const makeErrorChecker = (e: Function) => {
 
         result: undefined,
 
-        type(errorType: Function | Function[], callback: Function) {
+        type(errorType: Function | Function[], callback: (error: T) => any) {
             if (this.matched) return this;
             const errorTypes : Function[] = typeof errorType === "function" ? [errorType] : errorType;
 
             for (let type of errorTypes) {
-                if (this.e.constructor.name === type.name) {
+                if (this.e.constructor.name === type.name || this.e instanceof type) {
                     this.matched = true;
                     this.result = callback ? callback(this.e) : undefined;
                     return this;
@@ -28,7 +29,7 @@ const makeErrorChecker = (e: Function) => {
             throw this.e;
         },
 
-        others(callback: Function) {
+        others(callback: (error: T) => any) {
             if (this.matched) return this.result;
             this.result = callback ? callback(this.e) : undefined;
             return this.result;
@@ -36,6 +37,4 @@ const makeErrorChecker = (e: Function) => {
     }
 };
 
-module.exports = function (e) {
-    return makeErrorChecker(e);
-};
+export = makeErrorChecker;

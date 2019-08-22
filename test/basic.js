@@ -19,6 +19,12 @@ class NumberFourError extends Error {
     }
 }
 
+class SubclassNumberFourError extends NumberFourError {
+    constructor(...args) {
+        super(...args);
+    }
+}
+
 function functionThatThrowsErrors (a) {
     switch (a) {
         case 0:
@@ -31,6 +37,8 @@ function functionThatThrowsErrors (a) {
             throw new NumberThreeError('3 passed');
         case 4:
             throw new NumberFourError('4 passed');
+        case 5:
+            throw new SubclassNumberFourError('5 passed');
         default:
             throw new TypeError('Aaargh');
     }
@@ -52,7 +60,7 @@ tap.equal(scenario(0), true);
 tap.equal(scenario(2), 'Caught NumberTwoError');
 tap.equal(scenario(3), 'Caught NumberThreeError');
 tap.equal(scenario(4), 'Caught NumberFourError');
-tap.throws(() => scenario(5), TypeError);
+tap.throws(() => scenario(1000), TypeError);
 
 // Works with Promises
 
@@ -124,3 +132,15 @@ function catchAllScenario (a) {
 tap.equal(catchAllScenario(1), 'Caught Error with others');
 tap.equal(catchAllScenario(2), 'Caught NumberTwoError');
 tap.equal(catchAllScenario(3), 'Caught NumberThreeError with others');
+
+// handles subclasses
+function subclassScenario (a) {
+    try {
+        return functionThatThrowsErrors(a);
+    } catch(e) {
+        return aargh(e)
+            .type(NumberFourError, (e) => 'Caught ' + e.constructor.name)
+            .others((e) => 'Caught ' + e.constructor.name + ' with others');
+    }
+}
+tap.equal(subclassScenario(5), 'Caught SubclassNumberFourError');

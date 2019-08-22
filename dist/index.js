@@ -9,7 +9,7 @@ const makeErrorChecker = (e) => {
                 return this;
             const errorTypes = typeof errorType === "function" ? [errorType] : errorType;
             for (let type of errorTypes) {
-                if (this.e.constructor.name === type.name) {
+                if (this.e.constructor.name === type.name || this.e instanceof type) {
                     this.matched = true;
                     this.result = callback ? callback(this.e) : undefined;
                     return this;
@@ -30,6 +30,4 @@ const makeErrorChecker = (e) => {
         }
     };
 };
-module.exports = function (e) {
-    return makeErrorChecker(e);
-};
+module.exports = makeErrorChecker;
