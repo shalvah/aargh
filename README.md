@@ -162,6 +162,6 @@ I spent time thinking about the most intuitive/natural syntax/flow to use for th
 
 ## Don't forget
 A few tips for error handling in JS (whether you're using this package or if-statements):
-- Create your custom errors. Don't throw strings or just `Error`. **Why?** So you can trace exactly what went wrong i your code.
+- Create your custom errors. Don't throw strings or just `Error`. **Why?** So you can trace exactly what went wrong in your code.
 - Make sure your errors extend from the `Error` class. **Why?** So you can leverage all the awesome debugging tools out there, plus inbuilt Error properties like `.stack`.
 - Handle only errors you expect. Let the rest crash your app. **Why?** So you know when something goes wrong.
