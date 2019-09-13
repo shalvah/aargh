@@ -22,7 +22,7 @@ function fetchTweets (userId) {
 }
 ```
 
-This function is meant to throw a specific error when you exceed your Twitter API rate limits.
+This function is meant to throw a specific error when you exceed your Twitter API rate limits. (`RateLimitExceededError` is a custom Error class you created.)
 
 So you call it like this:
 
@@ -48,7 +48,7 @@ try {
 }
 ```
 
-See the problem? Different errors could be thrown in that function. For instance, if you look closely at the function, you'll see I made a typo on the first line (`userIdd` instead of `userId`) which will throw a `ReferenceError` when executed. However, the calling code will expect a `RateLimitError` only.
+See the problem? Different errors could be thrown in that function. For instance, if you look closely at the function, you'll see I made a typo on the first line (`userIdd` instead of `userId`) which will throw a `ReferenceError` (internal JavaScript error) when executed. However, the calling code will expect a `RateLimitError` only.
 
 There's a simple fix: use an if-statement:
 ```javascript
