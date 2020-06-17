@@ -5,6 +5,7 @@ Lol, just kidding. It's *one* of the sounds I make when working with JavaScript.
 
 [![npm version](https://badge.fury.io/js/aargh.svg)](https://badge.fury.io/js/aargh)
 [![Build Status](https://travis-ci.com/shalvah/aargh.svg?branch=master)](https://travis-ci.com/shalvah/aargh)
+[![npm](https://img.shields.io/npm/dt/aargh)](https://www.npmjs.com/package/aargh)
 
 ## Why, what, who is this?
 This module gives you a simple way to selectively handle errors in JavaScript.
