@@ -19,6 +19,20 @@ class NumberFourError extends Error {
     }
 }
 
+class NumberFiveError extends Error {
+    constructor(...args) {
+        super(...args);
+    }
+}
+
+class NumberSixError extends Error {
+    constructor(...args) {
+        super(...args);
+    }
+}
+
+
+
 class SubclassNumberFourError extends NumberFourError {
     constructor(...args) {
         super(...args);
@@ -39,9 +53,21 @@ function functionThatThrowsErrors (a) {
             throw new NumberFourError('4 passed');
         case 5:
             throw new SubclassNumberFourError('5 passed');
+        case 6:
+            throw new NumberSixError('6 passed');
         default:
             throw new TypeError('Aaargh');
     }
+}
+
+const errorMapping = {
+    '0': true,
+    '1': Error,
+    '2': NumberTwoError,
+    '3': NumberThreeError,
+    '4': NumberFiveError,
+    '5': SubclassNumberFourError,
+    '6': NumberSixError,
 }
 
 function scenario (a) {
@@ -51,6 +77,7 @@ function scenario (a) {
         return aargh(e)
             .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
             .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
+            .catch(NumberSixError, (e) => `Caught ${e.constructor.name}`)
             .throw();
     }
 }
@@ -60,6 +87,7 @@ tap.equal(scenario(0), true);
 tap.equal(scenario(2), 'Caught NumberTwoError');
 tap.equal(scenario(3), 'Caught NumberThreeError');
 tap.equal(scenario(4), 'Caught NumberFourError');
+tap.equal(scenario(6), 'Caught NumberSixError');
 tap.throws(() => scenario(1000), TypeError);
 
 // Works with Promises
@@ -78,6 +106,8 @@ const asyncFunctionThatThrowsErrors = (a) => {
                     return reject(new NumberThreeError('3 passed'));
                 case 4:
                     return reject(new NumberFourError('4 passed'));
+                case 5:
+                    return reject(new NumberFiveError('5 passed'));
                 default:
                     return reject(new TypeError('Aaargh'));
             }
@@ -91,6 +121,7 @@ function promiseScenario (a) {
                 return aargh(e)
                     .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
                     .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
+                    .catch(NumberFiveError, (e) => `Caught ${e.constructor.name}`)
                     .throw();
             });
 }
@@ -99,7 +130,8 @@ promiseScenario(0).then(r => tap.equal(r, true));
 promiseScenario(2).then(r => tap.equal(r, 'Caught NumberTwoError'));
 promiseScenario(3).then(r => tap.equal(r, 'Caught NumberThreeError'));
 promiseScenario(4).then(r => tap.equal(r, 'Caught NumberFourError'));
-tap.rejects(() => promiseScenario(5), TypeError);
+promiseScenario(5).then(r => tap.equal(r, 'Caught NumberFiveError'));
+tap.rejects(() => promiseScenario(7), TypeError);
 
 
 // What happens if error is thrown while executing a handler
@@ -109,13 +141,27 @@ function ohNoScenario (a) {
         return functionThatThrowsErrors(a);
     } catch(e) {
         return aargh(e)
-            .type(NumberTwoError, (e) => {
-                throw new NumberThreeError('Oh no!');
+            .type(errorMapping[String(a)], (e) => {
+                throw new errorMapping[String(a)]('Oh no!');
             })
             .throw();
     }
 }
-tap.throws(() => ohNoScenario(2), NumberThreeError);
+
+function ohNoScenarioWithCatch (a) {
+    try {
+        return functionThatThrowsErrors(a);
+    } catch(e) {
+        return aargh(e)
+            .catch(errorMapping[String(a)], (e) => {
+                throw new errorMapping[String(a)]('Oh no!');
+            })
+            .throw();
+    }
+}
+
+tap.throws(() => ohNoScenario(2), NumberTwoError);
+tap.throws(() => ohNoScenarioWithCatch(2), NumberTwoError);
 
 // Catch-all handler
 

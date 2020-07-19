@@ -1,10 +1,9 @@
 'use strict';
 const makeErrorChecker = (e) => {
+    let errorHandler = Symbol('errorHandler');
     return {
         e: e,
-        matched: false,
-        result: undefined,
-        type(errorType, callback) {
+        [errorHandler](errorType, callback) {
             if (this.matched)
                 return this;
             const errorTypes = typeof errorType === "function" ? [errorType] : errorType;
@@ -16,6 +15,14 @@ const makeErrorChecker = (e) => {
                 }
             }
             return this;
+        },
+        matched: false,
+        result: undefined,
+        type(errorType, callback) {
+            return this[errorHandler](errorType, callback);
+        },
+        catch(errorType, callback) {
+            return this[errorHandler](errorType, callback);
         },
         throw() {
             if (this.matched)
