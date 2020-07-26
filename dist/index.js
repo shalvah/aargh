@@ -21,7 +21,7 @@ const makeErrorChecker = (e) => {
         type(errorType, callback) {
             return this[errorHandler](errorType, callback);
         },
-        catch(errorType, callback) {
+        handle(errorType, callback) {
             return this[errorHandler](errorType, callback);
         },
         throw() {

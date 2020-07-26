@@ -11,7 +11,6 @@ const makeErrorChecker = (e: object) => {
         e: e,
 
         [errorHandler]( errorType: Function | Function[], callback: (error: T) => any){
-            
             if (this.matched) return this;
             const errorTypes : Function[] = typeof errorType === "function" ? [errorType] : errorType;
 
@@ -33,7 +32,7 @@ const makeErrorChecker = (e: object) => {
             return this[errorHandler](errorType, callback);
         },
 
-        catch(errorType: Function | Function[], callback: (error: T) => any){
+        handle(errorType: Function | Function[], callback: (error: T) => any){
             return this[errorHandler](errorType, callback);
         },
 

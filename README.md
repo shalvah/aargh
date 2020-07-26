@@ -134,8 +134,8 @@ The first argument to the `type` function is the type or types (as an array) of 
 
 You can return stuff from this callback too. Aargh will return this value to the caller.
 
-### .catch(errorTypes, callback)
-This is an imperative way of handling errors in `aargh`. It works exactly like the `type()` method call but we feel it would be more intuitive for users since vanilla JavaScript uses `catch` for handling errors.  The first argument to the `catch` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. Aargh will call this callback with the error as the only parameter. 
+### .handle(errorTypes, callback)
+This is an imperative way of handling errors in `aargh`. It works exactly like the `type()` method call but we feel it would be more intuitive for users since vanilla JavaScript uses `catch` for handling errors.  The first argument to the `handle` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. Aargh will call this callback with the error as the only parameter. 
 
 You can return stuff from this callback too. Aargh will return this value to the caller.
 

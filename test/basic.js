@@ -77,7 +77,7 @@ function scenario (a) {
         return aargh(e)
             .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
             .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
-            .catch(NumberSixError, (e) => `Caught ${e.constructor.name}`)
+            .handle(NumberSixError, (e) => `Caught ${e.constructor.name}`)
             .throw();
     }
 }
@@ -121,7 +121,7 @@ function promiseScenario (a) {
                 return aargh(e)
                     .type(NumberTwoError, (e) => 'Caught ' + e.constructor.name)
                     .type([NumberThreeError, NumberFourError], (e) => 'Caught ' + e.constructor.name)
-                    .catch(NumberFiveError, (e) => `Caught ${e.constructor.name}`)
+                    .handle(NumberFiveError, (e) => `Caught ${e.constructor.name}`)
                     .throw();
             });
 }
@@ -153,7 +153,7 @@ function ohNoScenarioWithCatch (a) {
         return functionThatThrowsErrors(a);
     } catch(e) {
         return aargh(e)
-            .catch(errorMapping[String(a)], (e) => {
+            .handle(errorMapping[String(a)], (e) => {
                 throw new errorMapping[String(a)]('Oh no!');
             })
             .throw();
