@@ -90,11 +90,11 @@ try {
     let tweets = await fetchTweets(userId);
 } catch(e) {
     return aargh(e)
-        .type(RateLimitExceededError, (e) => {
+        .handle(RateLimitExceededError, (e) => {
             console.log('Rate limit exceeded; initiating exponential backoff');
             // do backoff
         })
-        .type([SomeOtherError, SomeOtherAnnoyingError], (e) => {
+        .handle([SomeOtherError, SomeOtherAnnoyingError], (e) => {
             // handle it
         })
         .throw();
@@ -107,11 +107,11 @@ Works with Promise#catch() too:
 fetchTweets(userId)
   .catch(e => {
       return aargh(e)
-          .type(RateLimitExceededError, (e) =>  {
+          .handle(RateLimitExceededError, (e) =>  {
               console.log('Rate limit exceeded; initiating exponential backoff');
               // do backoff
           })
-          .type([SomeOtherError, SomeOtherAnnoyingError], (e) => {
+          .handle([SomeOtherError, SomeOtherAnnoyingError], (e) => {
               // handle it
           })
           .throw();
@@ -129,19 +129,13 @@ const aargh = require('aargh');
 
 The entry point. You pass in the error object you want to handle. You should probably have this as the first statement in all your catch() blocks.
 
-### .type(errorTypes, callback)
-The first argument to the `type` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. Aargh will call this callback with the error as the only parameter. 
-
-You can return stuff from this callback too. Aargh will return this value to the caller.
-
 ### .handle(errorTypes, callback)
-This is an imperative way of handling errors in `aargh`. It works exactly like the `type()` method call but we feel it would be more intuitive for users since vanilla JavaScript uses `catch` for handling errors.  The first argument to the `handle` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. Aargh will call this callback with the error as the only parameter. 
+The first argument to the `handle` function is the type or types (as an array) of errors you want to handle. The second is a callback containing the code you want to execute for that error. Aargh will call this callback with the error as the only parameter. 
 
 You can return stuff from this callback too. Aargh will return this value to the caller.
-
 
 ### .throw()
-Calling the `throw()` function ends the chain and ensures any errors which weren't matched by your `type()` checks are thrown back to the caller.
+Calling the `throw()` function ends the chain and ensures any errors which weren't matched by your `handle()` checks are thrown back to the caller.
 
 ### .others(callback)
 Use the `others()` function to end the chain and specify a callback to be executed if the error wasn't matched by your `type()` checks. You should use either `throw()` or `others()`, and it should only be used after all `type()` calls.
@@ -151,7 +145,7 @@ try {
     return await fetchTweets(userId);
 } catch(e) {
     return aargh(e)
-        .type(RateLimitExceededError, (e) => {
+        .handle(RateLimitExceededError, (e) => {
             // do backoff
         })
         .catch(APIUnavailableError, (e) => {
