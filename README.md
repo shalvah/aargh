@@ -148,7 +148,7 @@ try {
         .handle(RateLimitExceededError, (e) => {
             // do backoff
         })
-        .catch(APIUnavailableError, (e) => {
+        .handle(APIUnavailableError, (e) => {
           // backoff nicely
         })
         .others((e) => {
